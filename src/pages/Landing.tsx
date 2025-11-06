@@ -408,6 +408,18 @@ const Landing = () => {
                 </li>
                 <li>
                   <a 
+                    href="#o-que-e" 
+                    className="hover:text-cyan transition-colors inline-flex items-center gap-2"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      document.getElementById('o-que-e')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                  >
+                    O que é a OpportunAI
+                  </a>
+                </li>
+                <li>
+                  <a 
                     href="#por-que-usar" 
                     className="hover:text-cyan transition-colors inline-flex items-center gap-2"
                     onClick={(e) => {
