@@ -232,7 +232,7 @@ const Landing = () => {
       <section id="por-que-usar" className="py-24 bg-gradient-to-b from-background to-secondary/20">
         <div className="container mx-auto px-6">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-4 text-white">
-            Por que usar nossa <span className="text-orange">plataforma?</span>
+            Por que usar nossa <span className="text-orange">plataforma</span>?
           </h2>
           <p className="text-center text-foreground/80 mb-20 max-w-2xl mx-auto text-lg">
             Inteligência artificial que entende seu negócio e encontra oportunidades reais
