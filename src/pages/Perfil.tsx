@@ -74,7 +74,7 @@ const Perfil = () => {
       <header className="border-b border-border bg-card sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/dashboard")}>
+            <Button variant="ghost" size="icon" onClick={() => navigate("/dashboard")} className="bg-primary hover:bg-primary/90 text-primary-foreground">
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <span className="text-2xl font-bold">Perfil da Empresa</span>
