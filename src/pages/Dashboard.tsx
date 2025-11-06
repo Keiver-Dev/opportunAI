@@ -100,8 +100,8 @@ const Dashboard = () => {
       <header className="border-b border-border bg-card/50 sticky top-0 z-50 backdrop-blur-sm">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-1.5">
-            <img src={logo} alt="OpportunAI" className="h-8 w-auto" />
-            <span className="text-2xl font-bold">OpportunAI</span>
+            <img src={logo} alt="OpportunAI" className="h-8 w-auto brightness-0 invert" />
+            <span className="text-2xl font-bold text-white">OpportunAI</span>
           </div>
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="icon" onClick={() => navigate("/perfil")} className="hover:bg-secondary">
@@ -120,7 +120,7 @@ const Dashboard = () => {
           <Button
             variant={activeTab === "editais" ? "default" : "outline"}
             onClick={() => setActiveTab("editais")}
-            className={`flex items-center gap-2 ${activeTab === "editais" ? "bg-primary text-primary-foreground shadow-glow" : ""}`}
+            className={`flex items-center gap-2 ${activeTab === "editais" ? "bg-white text-black hover:bg-white/90" : "border-white text-white hover:bg-white hover:text-black"}`}
           >
             <FileText className="h-4 w-4" />
             Meus Editais
@@ -128,7 +128,7 @@ const Dashboard = () => {
           <Button
             variant={activeTab === "empresas" ? "default" : "outline"}
             onClick={() => setActiveTab("empresas")}
-            className={`flex items-center gap-2 ${activeTab === "empresas" ? "bg-primary text-primary-foreground shadow-glow" : ""}`}
+            className={`flex items-center gap-2 ${activeTab === "empresas" ? "bg-white text-black hover:bg-white/90" : "border-white text-white hover:bg-white hover:text-black"}`}
           >
             <Building2 className="h-4 w-4" />
             Minhas Empresas
@@ -138,7 +138,7 @@ const Dashboard = () => {
         {/* Filtros */}
         <Card className="mb-8 shadow-elegant border-border">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-cyan">
+            <CardTitle className="flex items-center gap-2 text-white">
               <Filter className="h-5 w-5" />
               Filtros de Busca
             </CardTitle>
@@ -148,7 +148,7 @@ const Dashboard = () => {
               <div>
                 <label className="text-sm font-medium mb-2 block">Localização</label>
                 <Select>
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-white text-black">
                     <SelectValue placeholder="Todas" />
                   </SelectTrigger>
                   <SelectContent>
@@ -162,7 +162,7 @@ const Dashboard = () => {
               <div>
                 <label className="text-sm font-medium mb-2 block">Valor</label>
                 <Select>
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-white text-black">
                     <SelectValue placeholder="Todos" />
                   </SelectTrigger>
                   <SelectContent>
@@ -176,7 +176,7 @@ const Dashboard = () => {
               <div>
                 <label className="text-sm font-medium mb-2 block">Compatibilidade</label>
                 <Select>
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-white text-black">
                     <SelectValue placeholder="Todas" />
                   </SelectTrigger>
                   <SelectContent>
@@ -190,7 +190,7 @@ const Dashboard = () => {
               <div>
                 <label className="text-sm font-medium mb-2 block">Status</label>
                 <Select>
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-white text-black">
                     <SelectValue placeholder="Todos" />
                   </SelectTrigger>
                   <SelectContent>
