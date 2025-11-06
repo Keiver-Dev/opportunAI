@@ -96,26 +96,16 @@ const Landing = () => {
               Automatize sua prospecção comercial e conecte-se com editais, 
               licitações e empresas que realmente importam.
             </p>
-            <div className="flex flex-wrap gap-4">
-              <Button 
-                size="lg" 
-                variant="light"
-                onClick={() => navigate("/login")}
-                className="px-8 py-6 text-lg shadow-glow hover-lift"
-              >
-                Começar gratuitamente
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline"
-                onClick={() => {
-                  document.getElementById('quem-somos')?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="px-8 py-6 text-lg border-2"
-              >
-                Saiba mais
-              </Button>
-            </div>
+            <Button 
+              size="lg" 
+              variant="outline"
+              onClick={() => {
+                document.getElementById('quem-somos')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="px-8 py-6 text-lg border-2"
+            >
+              Saiba mais
+            </Button>
           </div>
         </div>
       </section>
@@ -233,20 +223,6 @@ const Landing = () => {
                   Reduza em até 90% o tempo gasto em prospecção. Sua equipe comercial pode focar no que realmente importa: fechar negócios e construir relacionamentos com clientes.
                 </p>
               </div>
-            </div>
-
-            <div className="text-center">
-              <p className="text-lg text-muted-foreground mb-6">
-                Junte-se a centenas de empresas que já transformaram sua prospecção comercial
-              </p>
-              <Button 
-                size="lg" 
-                variant="light"
-                onClick={() => navigate("/login")}
-                className="px-8 py-6 text-lg shadow-glow hover-lift"
-              >
-                Experimentar gratuitamente
-              </Button>
             </div>
           </div>
         </div>
