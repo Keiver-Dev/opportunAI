@@ -79,7 +79,7 @@ const Perfil = () => {
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div className="flex items-center gap-1.5">
-              <img src={logo} alt="OpportunAI" className="h-8 w-auto" />
+              <img src={logo} alt="OpportunAI" className="h-8 w-auto brightness-0 invert" />
               <span className="text-2xl font-bold">Perfil da Empresa</span>
             </div>
           </div>
