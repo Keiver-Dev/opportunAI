@@ -32,22 +32,22 @@ const Landing = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b border-border bg-background sticky top-0 z-50 backdrop-blur-sm bg-background/80">
+      <header className="bg-black/95 sticky top-0 z-50 backdrop-blur-sm">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-1.5">
             <img src={logo} alt="OpportunAI" className="h-8 w-auto brightness-0 invert" />
-            <span className="text-2xl font-bold text-foreground">OpportunAI</span>
+            <span className="text-2xl font-bold text-white">OpportunAI</span>
           </div>
           
           {/* Navigation Menu */}
-          <nav className="hidden md:flex items-center gap-2">
+          <nav className="hidden md:flex items-center gap-8">
             <a 
               href="#quem-somos"
               onClick={(e) => {
                 e.preventDefault();
                 document.getElementById('quem-somos')?.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              className="text-white/70 hover:text-white transition-colors cursor-pointer"
             >
               Quem Somos
             </a>
@@ -57,7 +57,7 @@ const Landing = () => {
                 e.preventDefault();
                 document.getElementById('por-que-usar')?.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              className="text-white/70 hover:text-white transition-colors cursor-pointer"
             >
               Por que usar
             </a>
@@ -67,19 +67,18 @@ const Landing = () => {
                 e.preventDefault();
                 document.getElementById('depoimentos')?.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              className="text-white/70 hover:text-white transition-colors cursor-pointer"
             >
               Depoimentos
             </a>
+            <Button 
+              variant="outline" 
+              onClick={() => navigate("/login")}
+              className="uppercase tracking-wide bg-white text-black hover:bg-white/90 border-0 font-medium"
+            >
+              Login
+            </Button>
           </nav>
-
-          <Button 
-            variant="light" 
-            onClick={() => navigate("/login")}
-            className="uppercase tracking-wide ml-2"
-          >
-            Login
-          </Button>
         </div>
       </header>
 
