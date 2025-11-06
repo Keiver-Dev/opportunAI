@@ -63,7 +63,7 @@ const Login = () => {
           <CardContent>
             <Button 
               onClick={handleSectorSelect}
-              className="w-full h-16 text-lg bg-primary text-primary-foreground hover:bg-primary/90 shadow-glow"
+              className="w-full h-16 text-lg bg-white text-black hover:bg-white/90"
             >
               Tecnologia industrial
             </Button>
