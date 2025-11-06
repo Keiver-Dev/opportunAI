@@ -1,0 +1,143 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Base colors - Dark theme focused */
+    --background: 0 0% 7%;
+    --foreground: 0 0% 95%;
+    
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 95%;
+    
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 95%;
+    
+    /* Primary - Soft Blue/Cyan */
+    --primary: 180 45% 55%;
+    --primary-foreground: 0 0% 7%;
+    
+    /* Secondary - Soft Gray */
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 95%;
+    
+    /* Muted */
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
+    
+    /* Accent - Soft Orange/Coral */
+    --accent: 14 50% 55%;
+    --accent-foreground: 0 0% 7%;
+    
+    /* Destructive */
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    
+    /* Borders */
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 180 100% 60%;
+    
+    --radius: 0.5rem;
+    
+    /* Brand colors */
+    --brand-cyan: 180 45% 55%;
+    --brand-orange: 14 50% 55%;
+    --brand-coral: 0 50% 65%;
+    --brand-green: 142 45% 55%;
+    
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(180 45% 55%), hsl(14 50% 55%));
+    --gradient-text: linear-gradient(90deg, hsl(180 45% 55%), hsl(14 50% 55%), hsl(0 50% 65%));
+    
+    /* Shadows */
+    --shadow-glow: 0 0 40px hsl(180 45% 55% / 0.3);
+    --shadow-elegant: 0 20px 50px hsl(0 0% 0% / 0.5);
+    
+    /* Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    --sidebar-background: 0 0% 10%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 180 45% 55%;
+    --sidebar-primary-foreground: 0 0% 7%;
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 0 0% 20%;
+    --sidebar-ring: 180 45% 55%;
+  }
+
+  .dark {
+    --background: 0 0% 7%;
+    --foreground: 0 0% 95%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    background-color: hsl(var(--background));
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold tracking-tight;
+  }
+}
+
+@layer utilities {
+  .hover-lift {
+    @apply transition-smooth hover:-translate-y-1;
+  }
+
+  .hover-scale {
+    @apply transition-smooth hover:scale-105;
+  }
+
+  .gradient-text {
+    background: var(--gradient-text);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-cyan {
+    color: hsl(var(--brand-cyan));
+  }
+
+  .text-orange {
+    color: hsl(var(--brand-orange));
+  }
+
+  .text-coral {
+    color: hsl(var(--brand-coral));
+  }
+
+  .text-green {
+    color: hsl(var(--brand-green));
+  }
+
+  .gradient-hero {
+    background: var(--gradient-hero);
+  }
+
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .shadow-elegant {
+    box-shadow: var(--shadow-elegant);
+  }
+
+  .transition-smooth {
+    transition: var(--transition-smooth);
+  }
+}
