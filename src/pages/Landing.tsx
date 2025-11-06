@@ -52,6 +52,16 @@ const Landing = () => {
               Quem Somos
             </a>
             <a 
+              href="#o-que-e"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('o-que-e')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="text-white/70 hover:text-white transition-colors cursor-pointer"
+            >
+              O que é a OpportunAI?
+            </a>
+            <a 
               href="#por-que-usar"
               onClick={(e) => {
                 e.preventDefault();
@@ -163,7 +173,7 @@ const Landing = () => {
       </section>
 
       {/* O que é OpportunAI */}
-      <section className="py-24 bg-background">
+      <section id="o-que-e" className="py-24 bg-background">
         <div className="container mx-auto px-6">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
