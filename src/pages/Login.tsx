@@ -16,7 +16,7 @@ const Login = () => {
 
   const [formData, setFormData] = useState({
     companyName: "",
-    companyWebsite: "",
+    cnpj: "",
     email: "",
     password: "",
   });
@@ -104,13 +104,12 @@ const Login = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="companyWebsite">Site da empresa</Label>
+                  <Label htmlFor="cnpj">CNPJ</Label>
                   <Input
-                    id="companyWebsite"
-                    type="url"
-                    placeholder="https://exemplo.com.br"
-                    value={formData.companyWebsite}
-                    onChange={(e) => setFormData({ ...formData, companyWebsite: e.target.value })}
+                    id="cnpj"
+                    placeholder="00.000.000/0000-00"
+                    value={formData.cnpj}
+                    onChange={(e) => setFormData({ ...formData, cnpj: e.target.value })}
                     required
                   />
                 </div>
