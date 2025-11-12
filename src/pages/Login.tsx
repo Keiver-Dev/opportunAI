@@ -1,165 +1,287 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Target } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
-import logo from "@/assets/logo.png";
+import { useState, FormEvent, KeyboardEvent, ChangeEvent } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { authService } from "@/services/authService";
+import Logo from "@/assets/icons/Logo";
 
-const Login = () => {
-  const [step, setStep] = useState<"sector" | "auth">("sector");
-  const [isLogin, setIsLogin] = useState(true);
+// Background
+import Background from "@/assets/Background.jpg"
+
+/**
+ * @component Login
+ * @description User login page with email/password authentication.
+ * Supports "Remember Me" functionality and stores authentication tokens.
+ * 
+ * @features
+ * - Email and password validation
+ * - Remember me option (localStorage vs sessionStorage)
+ * - Automatic redirection on success
+ * - Error handling and display
+ * 
+ * @navigation
+ * - Success: Redirects to /home
+ * - Register: Link to /register
+ * - Forgot password: Link to /forgot-password
+ */
+const Login: React.FC = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
 
-  const [formData, setFormData] = useState({
-    companyName: "",
-    cnpj: "",
-    email: "",
-    password: "",
-  });
+  // State management with TypeScript types
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [rememberMe, setRememberMe] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSectorSelect = () => {
-    setStep("auth");
+  /**
+   * @function validateEmail
+   * @description Validates email format
+   * @param {string} email - Email to validate
+   * @returns {boolean} True if valid email format
+   */
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  /**
+   * @function handleSubmit
+   * @description Handles login form submission with validation
+   * 
+   * @process
+   * 1. Validates email format and password
+   * 2. Calls authService.login()
+   * 3. Stores token in localStorage (remember me) or sessionStorage
+   * 4. Stores user data (without password)
+   * 5. Redirects to /home
+   * 
+   * @important
+   * - Uses rememberMe to decide storage type (localStorage vs sessionStorage)
+   * - Token and user storage now handled by authService
+   * - Uses navigate with replace: true to clear history
+   */
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-    
-    // Simulação de autenticação
-    if (isLogin) {
-      toast({
-        title: "Login realizado com sucesso!",
-        description: "Redirecionando para o dashboard...",
-      });
-    } else {
-      toast({
-        title: "Conta criada com sucesso!",
-        description: "Bem-vindo à OpportunAI.",
-      });
+
+    if (isLoading) return; // Prevent multiple submissions
+
+    setError(null);
+
+    // Email validation
+    if (!email.trim()) {
+      setError("Email é obrigatório.");
+      return;
     }
-    
-    // Redirecionar para dashboard
-    setTimeout(() => {
-      navigate("/dashboard");
-    }, 1000);
+    if (!validateEmail(email)) {
+      setError("Por favor, insira um endereço de email válido.");
+      return;
+    }
+
+    // Password validation
+    if (!password.trim()) {
+      setError("Senha é obrigatória.");
+      return;
+    }
+    if (password.length < 6) {
+      setError("A senha deve ter pelo menos 6 caracteres.");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+
+      // authService now handles token and user storage internally
+      await authService.login(email, password, rememberMe);
+
+      // Redirect to home page
+      navigate("/dashboard", { replace: true }); // replace: true clears history
+    } catch (err: any) {
+      // Error handling with type safety
+      if (err.response) {
+        setError(err.response.data?.message || "Credenciais inválidas.");
+      } else if (err.request) {
+        console.log(err.request)
+        setError("Não foi possível conectar ao servidor. Por favor, tente novamente.");
+      } else {
+        setError("Ocorreu um erro inesperado.");
+      }
+      console.error("Login error:", err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  if (step === "sector") {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background p-6">
-        <Card className="w-full max-w-md shadow-elegant border-border">
-          <CardHeader className="text-center space-y-4">
-            <div className="flex justify-center">
-              <img src={logo} alt="OpportunAI" className="h-12 w-auto brightness-0 invert" />
-            </div>
-            <CardTitle className="text-2xl">Bem vindo a OpportunAI!</CardTitle>
-            <CardDescription className="text-base">
-              Em qual setor você trabalha?
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button 
-              onClick={handleSectorSelect}
-              className="w-full h-16 text-lg bg-white text-black hover:bg-white/90"
-            >
-              Tecnologia industrial
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  /**
+   * @function handleKeyPress
+   * @description Allows form submission with Enter key
+   */
+  const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>): void => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const form = e.currentTarget.form;
+      if (form) {
+        form.requestSubmit();
+      }
+    }
+  };
+
+  /**
+   * @function handleEmailChange
+   * @description Handles email input changes and clears errors
+   */
+  const handleEmailChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    setEmail(e.target.value);
+    if (error) setError(null); // Clear error on input change
+  };
+
+  /**
+   * @function handlePasswordChange
+   * @description Handles password input changes and clears errors
+   */
+  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    setPassword(e.target.value);
+    if (error) setError(null);
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-6">
-      <Card className="w-full max-w-md shadow-elegant border-border">
-        <CardHeader className="text-center space-y-2">
-          <div className="flex justify-center mb-2">
-            <img src={logo} alt="OpportunAI" className="h-10 w-auto brightness-0 invert" />
+    <main className="flex h-screen w-screen justify-center items-center overflow-hidden">
+      <div
+        className="absolute inset-0 bg-cover bg-center z-0 opacity-10"
+        style={{ backgroundImage: `url(${Background})` }}
+      />
+      <section className="w-full max-w-md px-6 py-8 sm:px-8 max-h-screen overflow-y-auto bg-[#141414] rounded-2xl border border-zinc-800 shadow-2xl z-10">
+        {/* Logo header */}
+        <header className="flex flex-col justify-center gap-2 mb-5">
+          <Logo className="text-[#0E0E0E] w-10 h-10 bg-[#FDFDFD] rounded-lg p-1 shadow-md" />
+        </header>
+
+        <article className="space-y-8">
+          {/* Title section */}
+          <div className="mb-10">
+            <h1 className="text-3xl sm:text-2xl font-semibold text-white mb-2">
+              Entrar
+            </h1>
+            <p className="text-[#949494] text-md">
+              Acesse sua conta e gerencie seus projetos e integrações.
+            </p>
           </div>
-          <CardTitle className="text-2xl">
-            {isLogin ? "Entrar na plataforma" : "Criar sua conta"}
-          </CardTitle>
-          <CardDescription>
-            {isLogin 
-              ? "Acesse sua conta para continuar" 
-              : "Preencha os dados para começar"}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {!isLogin && (
-              <>
-                <div className="space-y-2">
-                  <Label htmlFor="companyName">Nome da empresa</Label>
-                  <Input
-                    id="companyName"
-                    placeholder="Digite o nome da empresa"
-                    value={formData.companyName}
-                    onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="cnpj">CNPJ</Label>
-                  <Input
-                    id="cnpj"
-                    placeholder="00.000.000/0000-00"
-                    value={formData.cnpj}
-                    onChange={(e) => setFormData({ ...formData, cnpj: e.target.value })}
-                    required
-                  />
-                </div>
-              </>
-            )}
-            
-            <div className="space-y-2">
-              <Label htmlFor="email">E-mail do colaborador</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="seu@email.com"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                required
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="password">Senha</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                required
-              />
-            </div>
 
-            <Button type="submit" className="w-full bg-white text-black hover:bg-white/90">
-              {isLogin ? "Entrar" : "Criar conta"}
-            </Button>
-
-            <div className="text-center">
-              <button
-                type="button"
-                onClick={() => setIsLogin(!isLogin)}
-                className="text-sm text-muted-foreground hover:text-cyan transition-colors"
+          {/* Login form */}
+          <form onSubmit={handleSubmit} noValidate className="space-y-6">
+            {/* Error message display */}
+            {error && (
+              <div
+                role="alert"
+                className="bg-red-500/10 border border-red-500 text-red-500 px-4 py-3 text-sm rounded"
               >
-                {isLogin 
-                  ? "Não tem uma conta? Cadastre-se" 
-                  : "Já tem uma conta? Faça login"}
-              </button>
-            </div>
+                {error}
+              </div>
+            )}
+
+            {/* Email input */}
+            <label className="block">
+              <span className="sr-only">Email address</span>
+              <input
+                type="email"
+                value={email}
+                onChange={handleEmailChange}
+                onKeyPress={handleKeyPress}
+                placeholder="Endereço de email"
+                aria-label="Email address"
+                aria-invalid={!!error}
+                autoComplete="email"
+                required
+                className="w-full px-0 py-3 border-0 border-b border-gray-800 text-white placeholder-gray-500 focus:outline-none focus:border-white transition-colors bg-transparent"
+                disabled={isLoading}
+              />
+            </label>
+
+            {/* Password input */}
+            <label className="block">
+              <span className="sr-only">Password</span>
+              <input
+                type="password"
+                value={password}
+                onChange={handlePasswordChange}
+                onKeyPress={handleKeyPress}
+                placeholder="Senha"
+                aria-label="Password"
+                aria-invalid={!!error}
+                autoComplete="current-password"
+                required
+                minLength={6}
+                className="w-full px-0 py-3 border-0 border-b border-gray-800 text-white placeholder-gray-500 focus:outline-none focus:border-white transition-colors bg-transparent"
+                disabled={isLoading}
+              />
+            </label>
+
+            {/* Remember me checkbox and forgot password link */}
+            <nav className="flex items-center justify-between pt-2">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    setRememberMe(e.target.checked)
+                  }
+                  aria-label="Remember me"
+                  className="w-4 h-4 border accent-zinc-900 border-gray-700 rounded-none bg-black checked:bg-white"
+                  disabled={isLoading}
+                />
+                <span className="text-xs text-gray-400">Lembrar-me</span>
+              </label>
+
+              <Link
+                to="/forgot-password"
+                className="text-xs text-[#949494] hover:text-white transition-colors"
+                tabIndex={isLoading ? -1 : 0}
+              >
+                Esqueceu sua senha?
+              </Link>
+            </nav>
+
+            {/* Submit button */}
+            <button
+              type="submit"
+              disabled={isLoading}
+              aria-busy={isLoading}
+              className="w-full bg-white border cursor-pointer border-white text-black py-4 text-sm uppercase tracking-wider font-light hover:bg-zinc-950 hover:text-white transition-colors mt-8 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? "Entrando..." : "Entrar"}
+            </button>
           </form>
-        </CardContent>
-      </Card>
-    </div>
+
+          {/* Footer with registration link */}
+          <footer className="text-center pt-8 border-t border-gray-900">
+            <p className="text-xs text-[#949494]">
+              Não tem uma conta?{" "}
+              <Link
+                to="/register"
+                className="text-white hover:underline hover:text-gray-200 transition"
+                tabIndex={isLoading ? -1 : 0}
+              >
+                Cadastre-se
+              </Link>
+            </p>
+          </footer>
+        </article>
+      </section>
+    </main>
   );
 };
 
+/**
+ * @exports Login
+ * @default
+ * 
+ * @important
+ * - Token storage depends on "remember me" checkbox
+ * - User password is never stored in browser storage
+ * - Navigation uses replace: true to prevent back button issues
+ * - Token and user storage handled by authService
+ * 
+ * @dependencies
+ * - react-router-dom (navigation)
+ * - authService (API authentication)
+ * - Logo component
+ */
 export default Login;
