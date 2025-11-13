@@ -107,12 +107,51 @@ const TokenStorage = {
 };
 
 /**
+ * @interface UserProfile
+ * @description Detailed user profile data structure
+ */
+export interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
+  companyName?: string;
+  cnpj?: string;
+  sector?: string;
+  phone?: string;
+  city?: string;
+  state?: string;
+  createdAt: string;
+  // Não lembro quais tinham, mas a base tá aí.
+}
+
+/**
  * @namespace authService
  * @description
  * Collection of authentication-related API methods.
  * Each method communicates with the backend's `/auth` routes.
  */
 export const authService = {
+  /**
+   * @async
+   * @function getUserProfile
+   * @memberof authService
+   * @description
+   * Fetches the detailed profile of the currently authenticated user from the backend.
+   * The request is automatically authenticated by the Axios interceptor.
+   *
+   * @returns {Promise<UserProfile>} The user's detailed profile data.
+   *
+   * @throws {Error} If the request fails (e.g., user not authenticated, network error).
+   *
+   * @example
+   * const profile = await authService.getUserProfile();
+   * console.log(profile.name);
+   */
+  getUserProfile: async (): Promise<UserProfile> => {
+    const response: AxiosResponse<UserProfile> = await api.get("/auth/profile");
+    return response.data;
+  },
+
   /**
    * @async
    * @function login
