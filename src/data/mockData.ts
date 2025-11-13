@@ -2,7 +2,7 @@
  * Mock data for OpportunAI
  * Contains sample data for editais (public tenders) and empresas (companies)
  */
-
+ 
 export interface Edital {
   id: number;
   title: string;
