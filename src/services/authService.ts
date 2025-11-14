@@ -13,7 +13,7 @@ import { AxiosResponse } from "axios";
  * @description User data structure
  */
 export interface User {
-  id: string;
+  id: number;
   email: string;
   name?: string;
   companyName?: string;
@@ -76,8 +76,23 @@ const TokenStorage = {
    * Save token to appropriate storage
    */
   save: (token: string, rememberMe: boolean): void => {
+    console.log("💾 SAVING TOKEN");
+    console.log("Token length:", token.length);
+    console.log("Token preview:", token.substring(0, 30) + "...");
+    console.log("RememberMe:", rememberMe);
+    console.log(
+      "Target storage:",
+      rememberMe ? "localStorage" : "sessionStorage"
+    );
+
     const storage = rememberMe ? localStorage : sessionStorage;
     storage.setItem("token", token);
+
+    // Verificación inmediata
+    const saved = storage.getItem("token");
+    console.log("✅ Saved successfully?", saved === token);
+    console.log("✅ Can retrieve?", saved !== null);
+    console.log("==================");
   },
 
   /**
@@ -91,6 +106,7 @@ const TokenStorage = {
    * Remove token from all storages
    */
   clear: (): void => {
+    console.log("🗑️ Clearing all tokens and user data");
     localStorage.removeItem("token");
     sessionStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -101,8 +117,10 @@ const TokenStorage = {
    * Save user data to storage
    */
   saveUser: (user: User, rememberMe: boolean): void => {
+    console.log("💾 Saving user data");
     const storage = rememberMe ? localStorage : sessionStorage;
     storage.setItem("user", JSON.stringify(user));
+    console.log("✅ User saved");
   },
 };
 
@@ -111,7 +129,7 @@ const TokenStorage = {
  * @description Detailed user profile data structure
  */
 export interface UserProfile {
-  id: string;
+  id: number;
   name: string;
   email: string;
   companyName?: string;
@@ -121,7 +139,6 @@ export interface UserProfile {
   city?: string;
   state?: string;
   createdAt: string;
-  // Não lembro quais tinham, mas a base tá aí.
 }
 
 /**
@@ -148,8 +165,17 @@ export const authService = {
    * console.log(profile.name);
    */
   getUserProfile: async (): Promise<UserProfile> => {
-    const response: AxiosResponse<UserProfile> = await api.get("/auth/profile");
-    return response.data;
+    const response: AxiosResponse<{
+      success: boolean;
+      message: string;
+      data: UserProfile;
+    }> = await api.get("/auth/profile");
+
+    console.log("📊 getUserProfile full response:", response.data);
+    console.log("📊 Extracted profile data:", response.data.data);
+
+    // ✅ Retornar solo los datos del usuario (response.data.data)
+    return response.data.data;
   },
 
   /**
@@ -175,6 +201,10 @@ export const authService = {
     password: string,
     rememberMe: boolean = false
   ): Promise<LoginResponse> => {
+    console.log("🔵 Starting login request...");
+    console.log("Email:", email);
+    console.log("RememberMe:", rememberMe);
+
     const credentials: LoginCredentials = {
       email,
       password,
@@ -186,11 +216,36 @@ export const authService = {
       credentials
     );
 
+    console.log("🔵 Response received");
+    console.log("Response.data:", response.data);
+
     const { token, user } = response.data;
 
+    console.log("🔵 Extracted from response:");
+    console.log("Token present?", !!token);
+    console.log("Token type:", typeof token);
+    console.log("User present?", !!user);
+    console.log("User:", user);
+
     if (token) {
+      console.log("🔵 Calling TokenStorage.save...");
       TokenStorage.save(token, rememberMe);
+
+      console.log("🔵 Calling TokenStorage.saveUser...");
       TokenStorage.saveUser(user, rememberMe);
+
+      console.log("🔵 Verifying storage after save:");
+      console.log("Can get token?", TokenStorage.get() !== null);
+      console.log(
+        "Token in sessionStorage?",
+        sessionStorage.getItem("token") !== null
+      );
+      console.log(
+        "Token in localStorage?",
+        localStorage.getItem("token") !== null
+      );
+    } else {
+      console.error("❌ NO TOKEN IN RESPONSE!");
     }
 
     return response.data;

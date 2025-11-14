@@ -2,21 +2,22 @@ import { useState, FormEvent, KeyboardEvent, ChangeEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { authService } from "@/services/authService";
 import Logo from "@/assets/icons/Logo";
+import axios from "axios";
 
 // Background
-import Background from "@/assets/Background.jpg"
+import Background from "@/assets/Background.jpg";
 
 /**
  * @component Login
  * @description User login page with email/password authentication.
  * Supports "Remember Me" functionality and stores authentication tokens.
- * 
+ *
  * @features
  * - Email and password validation
  * - Remember me option (localStorage vs sessionStorage)
  * - Automatic redirection on success
  * - Error handling and display
- * 
+ *
  * @navigation
  * - Success: Redirects to /home
  * - Register: Link to /register
@@ -46,14 +47,14 @@ const Login: React.FC = () => {
   /**
    * @function handleSubmit
    * @description Handles login form submission with validation
-   * 
+   *
    * @process
    * 1. Validates email format and password
    * 2. Calls authService.login()
    * 3. Stores token in localStorage (remember me) or sessionStorage
    * 4. Stores user data (without password)
    * 5. Redirects to /home
-   * 
+   *
    * @important
    * - Uses rememberMe to decide storage type (localStorage vs sessionStorage)
    * - Token and user storage now handled by authService
@@ -94,14 +95,16 @@ const Login: React.FC = () => {
 
       // Redirect to home page
       navigate("/dashboard", { replace: true }); // replace: true clears history
-    } catch (err: any) {
+    } catch (err: unknown) {
       // Error handling with type safety
-      if (err.response) {
-        setError(err.response.data?.message || "Credenciais inválidas.");
-      } else if (err.request) {
-        console.log(err.request)
-        setError("Não foi possível conectar ao servidor. Por favor, tente novamente.");
+      if (axios.isAxiosError(err)) {
+        // Es un error de Axios
+        setError(err.response?.data?.message || "Credenciais inválidas.");
+      } else if (err instanceof Error) {
+        // Es un error genérico de JavaScript
+        setError(err.message || "Ocorreu um erro inesperado.");
       } else {
+        // Error desconocido
         setError("Ocorreu um erro inesperado.");
       }
       console.error("Login error:", err);
@@ -272,13 +275,13 @@ const Login: React.FC = () => {
 /**
  * @exports Login
  * @default
- * 
+ *
  * @important
  * - Token storage depends on "remember me" checkbox
  * - User password is never stored in browser storage
  * - Navigation uses replace: true to prevent back button issues
  * - Token and user storage handled by authService
- * 
+ *
  * @dependencies
  * - react-router-dom (navigation)
  * - authService (API authentication)

@@ -3,11 +3,25 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Target, Building2, Plus, Trash2, ArrowLeft, User, LogOut } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Target,
+  Building2,
+  Plus,
+  Trash2,
+  ArrowLeft,
+  User,
+  LogOut,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { authService, UserProfile } from '../services/authService'; // Importamos o serviço e a interface
+import { authService, UserProfile } from "../services/authService"; // Importamos o serviço e a interface
 
 interface Product {
   id: number;
@@ -19,7 +33,7 @@ interface Product {
 const Perfil = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  
+
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null); // Estado para o perfil do usuário
   const [isLoading, setIsLoading] = useState<boolean>(true); // Estado de carregamento
   const [error, setError] = useState<string | null>(null); // Estado de erro
@@ -28,15 +42,16 @@ const Perfil = () => {
     {
       id: 1,
       name: "Sistema de Monitoramento 24h",
-      description: "Sistema completo de CFTV com monitoramento remoto e alarmes inteligentes",
-      keywords: "segurança, monitoramento, câmeras, vigilância"
-    }
+      description:
+        "Sistema completo de CFTV com monitoramento remoto e alarmes inteligentes",
+      keywords: "segurança, monitoramento, câmeras, vigilância",
+    },
   ]);
 
   const [newProduct, setNewProduct] = useState({
     name: "",
     description: "",
-    keywords: ""
+    keywords: "",
   });
 
   // 2. useEffect para buscar os dados quando o componente é montado
@@ -46,9 +61,13 @@ const Perfil = () => {
         setIsLoading(true); // Começa a carregar
         const data = await authService.getUserProfile(); // Chama a função do nosso serviço
         setUserProfile(data); // Salva os dados no estado
-      } catch (err: any) { // Use 'any' for error type or a more specific type if known
+      } catch (err: any) {
+        // Use 'any' for error type or a more specific type if known
         console.error("Erro ao buscar perfil:", err);
-        setError(err.response?.data?.message || "Não foi possível carregar o perfil do usuário."); // Salva a mensagem de erro
+        setError(
+          err.response?.data?.message ||
+            "Não foi possível carregar o perfil do usuário."
+        ); // Salva a mensagem de erro
       } finally {
         setIsLoading(false); // Termina o carregamento, independente de sucesso ou erro
       }
@@ -62,14 +81,14 @@ const Perfil = () => {
       toast({
         title: "Campos obrigatórios",
         description: "Preencha nome e descrição do produto.",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
 
     setProducts([...products, { ...newProduct, id: Date.now() }]);
     setNewProduct({ name: "", description: "", keywords: "" });
-    
+
     toast({
       title: "Produto adicionado!",
       description: "A IA já está buscando oportunidades relacionadas.",
@@ -77,7 +96,7 @@ const Perfil = () => {
   };
 
   const handleRemoveProduct = (id: number) => {
-    setProducts(products.filter(p => p.id !== id));
+    setProducts(products.filter((p) => p.id !== id));
     toast({
       title: "Produto removido",
       description: "O produto foi removido da lista.",
@@ -90,16 +109,30 @@ const Perfil = () => {
       <header className="border-b border-border bg-card sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/dashboard")} className="hover:bg-primary hover:text-primary-foreground">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate("/dashboard")}
+              className="hover:bg-primary hover:text-primary-foreground"
+            >
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <span className="text-2xl font-bold">Perfil da Empresa</span>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="hover:bg-primary hover:text-primary-foreground">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="hover:bg-primary hover:text-primary-foreground"
+            >
               <User className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon" onClick={() => navigate("/login")} className="hover:bg-primary hover:text-primary-foreground">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate("/login")}
+              className="hover:bg-primary hover:text-primary-foreground"
+            >
               <LogOut className="h-5 w-5" />
             </Button>
           </div>
@@ -112,11 +145,15 @@ const Perfil = () => {
         )}
 
         {error && (
-          <div className="p-4 text-center text-red-500 text-lg">Erro: {error}</div>
+          <div className="p-4 text-center text-red-500 text-lg">
+            Erro: {error}
+          </div>
         )}
 
         {!isLoading && !error && !userProfile && (
-          <div className="p-4 text-center text-lg">Nenhum perfil encontrado.</div>
+          <div className="p-4 text-center text-lg">
+            Nenhum perfil encontrado.
+          </div>
         )}
 
         {userProfile && (
@@ -136,64 +173,80 @@ const Perfil = () => {
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>Nome da Empresa</Label>
-                    <Input 
-                      value={userProfile.companyName || ''}
-                      readOnly // Tornar o campo somente leitura, pois os dados vêm do backend
+                    <Input
+                      value={userProfile.companyName || ""}
+                      readOnly
+                      className="bg-muted cursor-not-allowed"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Nome da Empresa</Label>
+                    <Input
+                      value={userProfile.companyName || ""}
+                      readOnly
+                      className="bg-muted cursor-not-allowed"
                     />
                   </div>
                   <div className="space-y-2">
                     <Label>Nome do Contato</Label>
-                    <Input 
-                      value={userProfile.name || ''}
+                    <Input
+                      value={userProfile.name || ""}
                       readOnly
+                      className="bg-muted cursor-not-allowed"
                     />
                   </div>
                   <div className="space-y-2">
                     <Label>CNPJ</Label>
-                    <Input 
-                      value={userProfile.cnpj || ''}
+                    <Input
+                      value={userProfile.cnpj || ""}
                       readOnly
+                      className="bg-muted cursor-not-allowed"
                     />
                   </div>
                   <div className="space-y-2">
                     <Label>Setor de Atuação</Label>
-                    <Input 
-                      value={userProfile.sector || ''}
+                    <Input
+                      value={userProfile.sector || ""}
                       readOnly
+                      className="bg-muted cursor-not-allowed"
                     />
                   </div>
                   <div className="space-y-2">
                     <Label>E-mail</Label>
-                    <Input 
+                    <Input
                       type="email"
-                      value={userProfile.email || ''}
+                      value={userProfile.email || ""}
                       readOnly
+                      className="bg-muted cursor-not-allowed"
                     />
                   </div>
                   {userProfile.phone && (
                     <div className="space-y-2">
                       <Label>Telefone</Label>
-                      <Input 
+                      <Input
                         value={userProfile.phone}
                         readOnly
+                        className="bg-muted cursor-not-allowed"
                       />
                     </div>
                   )}
                   {userProfile.city && (
                     <div className="space-y-2">
                       <Label>Cidade</Label>
-                      <Input 
+                      <Input
                         value={userProfile.city}
                         readOnly
+                        className="bg-muted cursor-not-allowed"
                       />
                     </div>
                   )}
                   {userProfile.state && (
                     <div className="space-y-2">
                       <Label>Estado</Label>
-                      <Input 
+                      <Input
                         value={userProfile.state}
                         readOnly
+                        className="bg-muted cursor-not-allowed"
                       />
                     </div>
                   )}
@@ -203,7 +256,8 @@ const Perfil = () => {
                   Salvar alterações
                 </Button> */}
                 <p className="text-sm text-muted-foreground mt-4">
-                  Membro desde: {new Date(userProfile.createdAt).toLocaleDateString()}
+                  Membro desde:{" "}
+                  {new Date(userProfile.createdAt).toLocaleDateString()}
                 </p>
               </CardContent>
             </Card>
@@ -213,13 +267,17 @@ const Perfil = () => {
               <CardHeader>
                 <CardTitle>Produtos da Minha Empresa</CardTitle>
                 <CardDescription>
-                  Produtos e serviços oferecidos pela sua empresa. A IA usa essas informações para encontrar oportunidades.
+                  Produtos e serviços oferecidos pela sua empresa. A IA usa
+                  essas informações para encontrar oportunidades.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Lista de produtos */}
                 {products.map((product) => (
-                  <div key={product.id} className="p-4 border rounded-lg bg-secondary/30">
+                  <div
+                    key={product.id}
+                    className="p-4 border rounded-lg bg-secondary/30"
+                  >
                     <div className="flex justify-between items-start mb-2">
                       <h4 className="font-semibold text-lg">{product.name}</h4>
                       <Button
@@ -230,7 +288,9 @@ const Perfil = () => {
                         <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
                     </div>
-                    <p className="text-sm text-muted-foreground mb-2">{product.description}</p>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      {product.description}
+                    </p>
                     {product.keywords && (
                       <div className="text-xs text-muted-foreground">
                         <strong>Palavras-chave:</strong> {product.keywords}
@@ -251,7 +311,9 @@ const Perfil = () => {
                       <Input
                         placeholder="Ex: Sistema de Monitoramento 24h"
                         value={newProduct.name}
-                        onChange={(e) => setNewProduct({...newProduct, name: e.target.value})}
+                        onChange={(e) =>
+                          setNewProduct({ ...newProduct, name: e.target.value })
+                        }
                       />
                     </div>
                     <div className="space-y-2">
@@ -260,7 +322,12 @@ const Perfil = () => {
                         placeholder="Descreva o produto ou serviço, suas funcionalidades e diferenciais..."
                         rows={4}
                         value={newProduct.description}
-                        onChange={(e) => setNewProduct({...newProduct, description: e.target.value})}
+                        onChange={(e) =>
+                          setNewProduct({
+                            ...newProduct,
+                            description: e.target.value,
+                          })
+                        }
                       />
                     </div>
                     <div className="space-y-2">
@@ -268,10 +335,15 @@ const Perfil = () => {
                       <Input
                         placeholder="Ex: segurança, monitoramento, CFTV, alarmes"
                         value={newProduct.keywords}
-                        onChange={(e) => setNewProduct({...newProduct, keywords: e.target.value})}
+                        onChange={(e) =>
+                          setNewProduct({
+                            ...newProduct,
+                            keywords: e.target.value,
+                          })
+                        }
                       />
                     </div>
-                    <Button 
+                    <Button
                       onClick={handleAddProduct}
                       className="bg-primary hover:bg-primary/90"
                     >

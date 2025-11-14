@@ -29,7 +29,14 @@ const api: AxiosInstance = axios.create({
  */
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-    const token: string | null = localStorage.getItem("token");
+    // Buscar en ambos storages
+    const token: string | null = 
+      localStorage.getItem("token") || sessionStorage.getItem("token");
+    
+    console.log("=== API REQUEST ===");
+    console.log("URL:", config.url);
+    console.log("Token found?", !!token);
+    console.log("==================");
     
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -48,13 +55,33 @@ api.interceptors.request.use(
  * Handle common response scenarios like token expiration
  */
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log("=== API RESPONSE ===");
+    console.log("URL:", response.config.url);
+    console.log("Status:", response.status);
+    console.log("Data:", response.data);
+    console.log("===================");
+    return response;
+  },
   (error) => {
+    console.error("=== API ERROR ===");
+    console.error("URL:", error.config?.url);
+    console.error("Status:", error.response?.status);
+    console.error("Error:", error.response?.data);
+    console.error("=================");
+    
     // Handle 401 Unauthorized - token expired or invalid
-    if (error.response?.status === 401) {
+    // ⚠️ NO eliminar token durante login, solo en rutas protegidas
+    if (error.response?.status === 401 && !error.config?.url?.includes("/login")) {
       localStorage.removeItem("token");
-      // Optional: redirect to login
-      // window.location.href = '/login';
+      sessionStorage.removeItem("token");
+      localStorage.removeItem("user");
+      sessionStorage.removeItem("user");
+      
+      // Redirigir solo si no estamos ya en login
+      if (window.location.pathname !== "/login") {
+        window.location.href = "/login";
+      }
     }
     
     return Promise.reject(error);
